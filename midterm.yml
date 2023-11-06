@@ -1,0 +1,42 @@
+---
+- name: Install Monitoring and Database Tools
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Install Grafana, Prometheus, and InfluxDB
+         state: started
+      with_items:
+        - grafana
+        - prometheus
+        - influxdb
+
+    - name: Start and Enable Services
+      service:
+        state: started
+        enabled: true
+      loop:
+        - grafana-server
+        - prometheus
+        - influxdb
+
+- name: Install Ubuntu Stack Servers
+  hosts: ubuntu_stack_servers
+  become: true
+
+  tasks:
+    - name: Install Apache, PHP and MariaDB
+        state: present
+      loop:
+        - httpd
+        - php
+        -mariadb-server
+
+    - name: Start and Enable Services
+      service:
+        state: started
+        enabled: true
+      loop:
+        - httpd
+        - mariadb
+
